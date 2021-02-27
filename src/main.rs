@@ -5,9 +5,9 @@ use plotlib::style::{PointStyle};
 mod math;
 use math::*;
 pub fn main() {
+    let x = [20,25,30,35,40,46];
     let data = [0,1,2,3,4,5];
     let indices = (0..data.len()).collect::<Vec<_>>();
-    let x = [20,25,30,35,40,46];
     let converted_data: Vec<_> = data.iter().map(|i| *i as f64).collect();
     let converted_x: Vec<_> = x.iter().map(|i| *i as f64).collect();
     println!("Mean: {}", avg(&data));
