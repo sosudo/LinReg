@@ -26,7 +26,6 @@ pub fn main() {
             .colour("#000000")
     );
     let line = plug(slope, avg(&x), avg(&data), &x);
-    println!("{:?}",line);
     let plot_two: Plot = Plot::new(line).point_style(
         PointStyle::new()
             .colour("#0000ff")
