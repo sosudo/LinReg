@@ -2,6 +2,8 @@ use plotlib::page::Page;
 use plotlib::repr::Plot;
 use plotlib::view::ContinuousView;
 use plotlib::style::{PointStyle};
+mod math;
+use math::*;
 pub fn main() {
     let data = [0,1,2,3,4,5];
     let indices = (0..data.len()).collect::<Vec<_>>();
@@ -11,6 +13,7 @@ pub fn main() {
     println!("Mean: {}", avg(&data));
     println!("Standard Deviation: {}", standard_deviation(&data));
     println!("Correlation Coefficient: {}", coefficient(&indices, &x, &data));
+    println!("Variance: {}", variance(&data));
     let slope: f64 = (coefficient(&indices, &x, &data) * standard_deviation(&data))/(standard_deviation(&x));
     match slope as i32 {
         -1 => println!("Line of Best Fit in Standard Form: y - {} = -(x - {})", avg(&data), avg(&x)),
@@ -22,28 +25,16 @@ pub fn main() {
         PointStyle::new()
             .colour("#000000")
     );
+    let line = plug(slope, avg(&x), avg(&data), &x);
+    println!("{:?}",line);
+    let plot_two: Plot = Plot::new(line).point_style(
+        PointStyle::new()
+            .colour("#0000ff")
+    );
     let view = ContinuousView::new()
         .add(plot_one)
+        .add(plot_two)
         .x_label("X-Axis")
         .y_label("Data");
     Page::single(&view).save("plot.svg").unwrap();
 }
-pub fn avg(data: &[usize]) -> f64 {
-    data.iter().sum::<usize>() as f64/data.len() as f64
-}
-pub fn standard_deviation(data: &[usize]) -> f64 {
-    (variance(data)/(data.len() as f64 - 1.)).sqrt()
-}
-pub fn coefficient(indices: &[usize], x: &[usize], y: &[usize]) -> f64 {
-    let denominator = (variance(&x) * variance( &y)).sqrt();
-    let numerator:f64 = indices.iter().map(|i|(x[*i] as f64 - avg(x))*(y[*i] as f64 - avg(y))).sum();
-    numerator/denominator
-}
-pub fn variance(data: &[usize]) -> f64 {
-    let avg = avg(data);
-    data.iter().map(|i|(*i as f64-avg) * (*i as f64-avg)).sum()
-}
-/*
-pub fn plug(slope: &[usize], x: &[usize], y: &[usize], ) -> f64 {
-    
-}*/
