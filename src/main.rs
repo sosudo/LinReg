@@ -16,7 +16,7 @@ pub fn main() {
         -1 => println!("Line of Best Fit in Standard Form: y - {} = -(x - {})", avg(&data), avg(&x)),
         1 => println!("Line of Best Fit in Standard Form: y - {} = x - {}", avg(&data), avg(&x)),
         _ => println!("Line of Best Fit in Standard Form: y - {} = {}(x - {})", avg(&data), slope, avg(&x))
-    };
+    }
     let dataset = converted_x.into_iter().zip(converted_data.into_iter()).collect::<Vec<_>>();
     let plot_one: Plot = Plot::new(dataset).point_style(
         PointStyle::new()
@@ -32,18 +32,16 @@ pub fn avg(data: &[usize]) -> f64 {
     data.iter().sum::<usize>() as f64/data.len() as f64
 }
 pub fn standard_deviation(data: &[usize]) -> f64 {
-    let avg = avg(&data);
-    let sum:f64 = data.iter().map(|i|(*i as f64-avg) * (*i as f64-avg)).sum();
-    (sum/(data.len() as f64 - 1.)).sqrt()
+    (variance(data)/(data.len() as f64 - 1.)).sqrt()
 }
 pub fn coefficient(indices: &[usize], x: &[usize], y: &[usize]) -> f64 {
-    let x_avg = avg(&x);
-    let y_avg = avg(&y);
-    let x_sum:f64 = x.iter().map(|i|(*i as f64-x_avg) * (*i as f64-x_avg)).sum();
-    let y_sum:f64 = y.iter().map(|i|(*i as f64-y_avg) * (*i as f64-y_avg)).sum();
-    let denominator = (x_sum * y_sum).sqrt();
-    let numerator:f64 = indices.iter().map(|i|(x[*i] as f64 - x_avg)*(y[*i] as f64 - y_avg)).sum();
-    numerator/denominator as f64
+    let denominator = (variance(&x) * variance( &y)).sqrt();
+    let numerator:f64 = indices.iter().map(|i|(x[*i] as f64 - avg(x))*(y[*i] as f64 - avg(y))).sum();
+    numerator/denominator
+}
+pub fn variance(data: &[usize]) -> f64 {
+    let avg = avg(data);
+    data.iter().map(|i|(*i as f64-avg) * (*i as f64-avg)).sum()
 }
 /*
 pub fn plug(slope: &[usize], x: &[usize], y: &[usize], ) -> f64 {
